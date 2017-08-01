@@ -3,5 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.effe.kelimebulucu.MainActivity" >
 
-
+    <item
+        android:id="@+id/float_button"
+        android:icon="@drawable/ic_float_window"
+        android:title="Floating Window"
+        app:showAsAction="always"
+        android:orderInCategory="0"/>
 </menu>

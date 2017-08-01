@@ -1,5 +1,7 @@
-package kelimebulucu.effe.com.kelimebulucu;
+package com.effe.kelimebulucu;
 
+import android.os.Build;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -30,17 +32,21 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-public class MainActivity extends AppCompatActivity {
+import kelimebulucu.effe.com.kelimebulucu.R;
 
+public class MainActivity extends AppCompatActivity {
+    private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
     EditText m_edit;
     ListView m_listView;
     ArrayAdapter<String> m_adapter;
@@ -50,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
-    public static native boolean abs(int i);
+    public static List<Character> schars = new ArrayList<>();
+    public static List<String> found = new ArrayList<>();
+    public static List<Leaf> rootList = new ArrayList<>();
+//    public static native boolean abs(int i);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,8 +122,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -137,6 +143,19 @@ public class MainActivity extends AppCompatActivity {
 //        if (id == R.id.action_settings) {
 //            return true;
 //        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+
+
+            //If the draw over permission is not available open the settings screen
+            //to grant the permission.
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+        } else {
+            startService(new Intent(MainActivity.this, FloatingViewService.class));
+            finish();
+        }
+        Toast.makeText(getBaseContext(), "Floating oldu", Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
     }
 
@@ -195,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
             return rootView;
         }
     }
-
-    List<Leaf> rootList = new ArrayList<>();
 
     public void loadTree() {
         AssetManager assetManager = getAssets();
@@ -263,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public Leaf getRootbyKey(char key) {
+    public static Leaf getRootbyKey(char key) {
         for (int i = 0; i < rootList.size(); i++) {
             if (rootList.get(i).getKey() == key)
                 return rootList.get(i);
@@ -271,10 +288,9 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    List<Character> schars = new ArrayList<>();
-    List<String> found = new ArrayList<>();
 
-    private void searchScrambled() {
+
+    public static void searchScrambled() {
         String s = "";
         for (int i = 0; i < schars.size(); i++) {
             char ch = schars.get(i);
@@ -288,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void _searchScr(Leaf l, String s) {
+    private static void _searchScr(Leaf l, String s) {
         lc++;
         s = s + l.getKey();
         if (l.getIsWord()) {
@@ -305,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    int lc = 0;
+    static int lc = 0;
     ProgressDialog mDialog;
 
     class GetTask extends AsyncTask<Object, Void, String> {

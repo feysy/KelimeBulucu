@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content">
+
+<!--Root container-->
+<RelativeLayout
+    android:id="@+id/root_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="UselessParent">
+
+    <!--View while view is collapsed-->
+    <RelativeLayout
+        android:id="@+id/collapse_view"
+        android:layout_width="wrap_content"
+        android:visibility="visible"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--Icon of floating widget -->
+        <ImageView
+            android:id="@+id/collapsed_iv"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/common_google_signin_btn_icon_dark_disabled"
+            tools:ignore="ContentDescription"/>
+
+        <!--Close button-->
+        <ImageView
+            android:id="@+id/close_btn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginLeft="40dp"
+            android:src="@drawable/common_full_open_on_phone"
+            tools:ignore="ContentDescription"/>
+    </RelativeLayout>
+
+    <!--View while view is expanded-->
+    <LinearLayout
+        android:id="@+id/expanded_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBackground"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:padding="8dp">
+            <TableRow
+                android:layout_width="wrap_content"
+                android:visibility="visible"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/editSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textColor="@color/colorTextColor"
+                    android:minLines="1" />
+
+                <ImageView
+                    android:id="@+id/collapse_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="40dp"
+                    android:src="@drawable/ic_launcher"
+                    tools:ignore="ContentDescription"/>
+            </TableRow>
+
+            <ListView
+                android:id="@+id/listResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </ListView>
+
+    </LinearLayout>
+</RelativeLayout>
+</FrameLayout>
