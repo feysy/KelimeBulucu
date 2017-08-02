@@ -9,8 +9,8 @@
         <option name="gradleJvm" value="1.7" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
+            <option value="/data/ev/efeyucesoy/StudioProjects/KelimeBulucu" />
+            <option value="/data/ev/efeyucesoy/StudioProjects/KelimeBulucu/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

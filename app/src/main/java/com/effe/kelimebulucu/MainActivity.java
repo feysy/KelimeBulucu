@@ -1,5 +1,6 @@
 package com.effe.kelimebulucu;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
@@ -59,11 +60,16 @@ public class MainActivity extends AppCompatActivity {
     public static List<Character> schars = new ArrayList<>();
     public static List<String> found = new ArrayList<>();
     public static List<Leaf> rootList = new ArrayList<>();
+
+    private static SharedPreferences settings;
+    boolean darkButton = false;
 //    public static native boolean abs(int i);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        settings = getSharedPreferences("preferences", 0);
 
         setContentView(R.layout.activity_main);
 
@@ -122,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
@@ -131,6 +138,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        darkButton = settings.getBoolean("darkMode", darkButton);
+        menu.findItem(R.id.darkwin_button).setChecked(darkButton);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
         return true;
     }
 
@@ -143,19 +159,30 @@ public class MainActivity extends AppCompatActivity {
 //        if (id == R.id.action_settings) {
 //            return true;
 //        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+        switch (item.getItemId()) {
+            case R.id.float_button:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
 
 
-            //If the draw over permission is not available open the settings screen
-            //to grant the permission.
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
-        } else {
-            startService(new Intent(MainActivity.this, FloatingViewService.class));
-            finish();
+                    //If the draw over permission is not available open the settings screen
+                    //to grant the permission.
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + getPackageName()));
+                    startActivityForResult(intent, CODE_DRAW_OVER_OTHER_APP_PERMISSION);
+                } else {
+                    startService(new Intent(MainActivity.this, FloatingViewService.class));
+                    finish();
+                }
+                Toast.makeText(getBaseContext(), "Floating oldu", Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            case R.id.darkwin_button:
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putBoolean("darkMode", !item.isChecked());
+                editor.commit();
+                darkButton = !item.isChecked();
+                item.setChecked(darkButton);
+                return super.onOptionsItemSelected(item);
         }
-        Toast.makeText(getBaseContext(), "Floating oldu", Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
     }
 

@@ -35,7 +35,7 @@ android:layout_height="wrap_content">
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginLeft="40dp"
-            android:src="@drawable/common_full_open_on_phone"
+            android:src="@drawable/ic_cloase_float"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
@@ -44,18 +44,18 @@ android:layout_height="wrap_content">
         android:id="@+id/expanded_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorBackground"
+        android:background="@drawable/floatwin_background"
         android:visibility="gone"
         android:orientation="vertical"
         android:padding="8dp">
-            <TableRow
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:visibility="visible"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
                 <EditText
                     android:id="@+id/editSearch"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:imeOptions="actionSearch"
@@ -66,12 +66,12 @@ android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/collapse_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginLeft="40dp"
-                    android:src="@drawable/ic_launcher"
-                    tools:ignore="ContentDescription"/>
-            </TableRow>
+                    android:src="@drawable/ic_collapse"
+                    tools:ignore="ContentDescription"
+                    android:adjustViewBounds="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"/>
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/listResult"

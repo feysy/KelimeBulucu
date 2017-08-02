@@ -3,10 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.effe.kelimebulucu.MainActivity" >
 
+
     <item
         android:id="@+id/float_button"
-        android:icon="@drawable/ic_float_window"
+        android:icon="@drawable/ic_float_bttn"
         android:title="Floating Window"
         app:showAsAction="always"
-        android:orderInCategory="0"/>
+        android:orderInCategory="1"/>
+    <group android:id="@+id/group_topmost"
+        android:menuCategory="system">
+        <item
+            android:id="@+id/darkwin_button"
+            android:title="Koyu Pencere"
+            android:checkable="true"
+            />
+    </group>
+
+
 </menu>

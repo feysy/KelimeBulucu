@@ -3,6 +3,8 @@ package com.effe.kelimebulucu;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -35,6 +37,7 @@ import kelimebulucu.effe.com.kelimebulucu.R;
 public class FloatingViewService extends Service {
     private WindowManager mWindowManager;
     private View mFloatingView;
+    boolean darkButton = false;
 
     public FloatingViewService() {
     }
@@ -55,6 +58,13 @@ public class FloatingViewService extends Service {
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                PixelFormat.TRANSLUCENT);
+
+        final WindowManager.LayoutParams params2 = new WindowManager.LayoutParams(
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
                 PixelFormat.TRANSLUCENT);
 
@@ -72,7 +82,20 @@ public class FloatingViewService extends Service {
         //The root element of the expanded view layout
         final View expandedView = mFloatingView.findViewById(R.id.expanded_container);
 
+        SharedPreferences settings = getSharedPreferences("preferences", 0);;
+        darkButton = settings.getBoolean("darkMode", darkButton);
+        if(darkButton)
+            expandedView.setBackground(getResources().getDrawable(R.drawable.floatwin_background_dark));
+        else
+            expandedView.setBackground(getResources().getDrawable(R.drawable.floatwin_background));
+
+
         final EditText m_edit = (EditText) mFloatingView.findViewById(R.id.editSearch);
+        if(darkButton)
+            m_edit.setTextColor(getResources().getColor(R.color.colorTextColorDark));
+        else
+            m_edit.setTextColor(getResources().getColor(R.color.colorTextColor));
+
         final ListView m_listView = (ListView) mFloatingView.findViewById(R.id.listResult);
 
         final ArrayAdapter<String> m_adapter = new ArrayAdapter<String>(this,
@@ -84,7 +107,10 @@ public class FloatingViewService extends Service {
                 TextView textView=(TextView) view.findViewById(android.R.id.text1);
 
             /*YOUR CHOICE OF COLOR*/
-                textView.setTextColor(getResources().getColor(R.color.colorTextColor));
+                if(darkButton)
+                    textView.setTextColor(getResources().getColor(R.color.colorTextColorDark));
+                else
+                    textView.setTextColor(getResources().getColor(R.color.colorTextColor));
 
                 return view;
             }
@@ -114,8 +140,10 @@ public class FloatingViewService extends Service {
                     });
                     m_adapter.notifyDataSetChanged();
 
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(m_edit.getWindowToken(), 0);
+//                    m_edit.clearFocus();
+//                    m_edit.setEnabled(false);
+//                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                    imm.hideSoftInputFromWindow(m_edit.getWindowToken(), 0);
 
                     return true;
                 }
@@ -168,8 +196,10 @@ public class FloatingViewService extends Service {
                                 //and expanded view will become visible.
                                 expandedView.setVisibility(View.GONE);
                                 collapsedView.setVisibility(View.VISIBLE);
-                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                                imm.hideSoftInputFromWindow(m_edit.getWindowToken(), 0);
+
+                                mWindowManager.updateViewLayout(mFloatingView, params);
+//                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//                                imm.hideSoftInputFromWindow(m_edit.getWindowToken(), 0);
 
                             }
                         }
@@ -181,6 +211,7 @@ public class FloatingViewService extends Service {
 
 
                         //Update the layout with new X & Y coordinate
+                        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
                         mWindowManager.updateViewLayout(mFloatingView, params);
                         return true;
                 }
@@ -222,6 +253,8 @@ public class FloatingViewService extends Service {
                                 //and expanded view will become visible.
                                 collapsedView.setVisibility(View.GONE);
                                 expandedView.setVisibility(View.VISIBLE);
+                                params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+                                mWindowManager.updateViewLayout(mFloatingView, params);
                             }
                         }
                         return true;
